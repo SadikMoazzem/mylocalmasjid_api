@@ -21,6 +21,7 @@ from api.auth.utils import (
     check_user_update_privileges,
     create_new_user,
     get_user,
+    get_available_users,
     update_user,
 )
 from api.database import get_session
@@ -56,6 +57,25 @@ def update_token(
 	return encode_update_token(user=user)
 
 
+@router.get('/users', response_model=list[UserRead])
+def get_users(
+    user_request=Depends(auth_access_wrapper),
+    db: Session = Depends(get_session)
+):
+    if not user_request:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    logger.info("%s.get_users: %s", __name__, user_request)
+    current_user = get_user(user_request.id, db=db)
+    available_users = get_available_users(current_user, db=db)
+
+    return [UserRead.model_construct(**available_user.__dict__) for available_user in available_users]
+
+
 # Get user endpoint. Will return current user
 @router.get('/user', response_model=UserRead)
 def get_current_user(
@@ -70,11 +90,10 @@ def get_current_user(
         )
     
     logger.info("%s.get_current_user: %s", __name__, user)
+    current_user = get_user(user.id, db=db)
+    logger.info("%s.get_current_user: %s", __name__, current_user)
 
-    user_obj = get_user(user.id, db=db)
-    k = UserRead.model_construct(**user_obj.__dict__)
-
-    return k
+    return UserRead.model_construct(**current_user.__dict__)
 
 
 # Update User
@@ -85,7 +104,6 @@ def update_a_user(
     user_request=Depends(auth_access_wrapper),
     db: Session = Depends(get_session)
 ):
-    #  TODO: Add code to check if user is allowed to update chosen user
     check_user_update_privileges(user_request, user_id)
      
     updated_user = update_user(user_id, user, db=db)
@@ -104,7 +122,6 @@ def create_user(
     user: UserCreate,
     user_request=Depends(auth_access_wrapper),
     db: Session = Depends(get_session)):
-    # TODO: Add code to check if user is allowed to create a new user
     logger.info("%s.create_user: %s", __name__, user_request)
     if user_request.role != "admin":
         raise HTTPException(
@@ -145,13 +162,3 @@ def change_a_password(
         )
 
     return {"Password update": "Success"}
-
-
-# # EXAMPLE
-# # Only fresh JWT access token can access this endpoint
-# @router.get('/protected-fresh')
-# def protected_fresh(Authorize: AuthJWT = Depends()):
-#     Authorize.fresh_jwt_required()
-
-#     current_user = Authorize.get_jwt_subject()
-#     return {"user": current_user}

@@ -6,6 +6,9 @@ from api.public.facility.crud import add_facility, get_masjid_facilities, update
 from api.public.facility.models import Facility, FacilityCreate
 from api.utils.logger import logger_config
 
+from api.auth.authenticate import auth_access_wrapper
+from api.auth.utils import check_user_masjid_update_privileges
+
 router = APIRouter()
 
 logger = logger_config(__name__)
@@ -18,12 +21,23 @@ def get_a_masjid_facilities(masjid_id: str, db: Session = Depends(get_session)):
 
 
 @router.patch("/{facility_id}", response_model=Facility)
-def update_a_masjid_facility(facility_id: str, facility: Facility, db: Session = Depends(get_session)):
+def update_a_masjid_facility(
+    facility_id: str,
+    facility: Facility,
+    db: Session = Depends(get_session),
+    user_request=Depends(auth_access_wrapper),
+):
     logger.info("%s.update_a_masjid_facility: %s", __name__, facility)
+    check_user_masjid_update_privileges(user_request, facility.masjid_id)
     return update_masjid_facility(id=facility_id, facility=facility, db=db)
 
 
 @router.post("", response_model=FacilityCreate)
-def create_a_facility(facility: FacilityCreate, db: Session = Depends(get_session)):
+def create_a_facility(
+    facility: FacilityCreate,
+    db: Session = Depends(get_session),
+    user_request=Depends(auth_access_wrapper),
+):
     logger.info("%s.create_a_facility: %s", __name__, facility)
+    check_user_masjid_update_privileges(user_request, facility.masjid_id)
     return add_facility(facility=facility, db=db)

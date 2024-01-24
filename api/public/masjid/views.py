@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query,  HTTPException, status
 from sqlmodel import Session
 
 from api.database import get_session
@@ -10,6 +10,9 @@ from api.public.masjid.models import MasjidCreate, MasjidRead, MasjidUpdate
 from api.public.prayer_times import views as prayer_times_api
 from api.public.special_prayer import views as special_prayers_api
 from api.utils.logger import logger_config
+
+from api.auth.authenticate import auth_access_wrapper
+from api.auth.utils import check_user_masjid_update_privileges
 
 router = APIRouter()
 
@@ -33,14 +36,36 @@ def get_a_masjid(masjid_id: str, db: Session = Depends(get_session)):
 
 
 @router.patch("/{masjid_id}", response_model=MasjidUpdate)
-def update_a_masjid(masjid_id: str, masjid: MasjidUpdate, db: Session = Depends(get_session)):
+def update_a_masjid(
+    masjid_id: str,
+    masjid: MasjidUpdate,
+    db: Session = Depends(get_session),
+    user_request=Depends(auth_access_wrapper),
+):
     logger.info("%s.update_a_masjid.id: %s", __name__, masjid_id)
+    check_user_masjid_update_privileges(user_request, masjid_id)
     return update_masjid(masjid_id=masjid_id, masjid=masjid, db=db)
 
 
 @router.post("", response_model=MasjidRead)
-def create_a_masjid(masjid: MasjidCreate, db: Session = Depends(get_session)):
+def create_a_masjid(
+    masjid: MasjidCreate,
+    db: Session = Depends(get_session),
+    user_request=Depends(auth_access_wrapper),
+):
     logger.info("%s.create_a_masjid: %s", __name__, masjid)
+    if not user_request:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"User not authorized to create masjid",
+        )
+    
+    # Only admin can create masjid
+    if not user_request.role == "admin":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"User not authorized to create masjid",
+        )
     return create_masjid(masjid=masjid, db=db)
 
 

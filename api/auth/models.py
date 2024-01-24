@@ -15,9 +15,9 @@ class UserBase(SQLModel):
 
     email: str
     role: UserRole = Column(Enum(UserRole), default=UserRole.masjid_admin)
-    active: bool = Field(default=True)
+    active: bool
     full_name: Optional[str]
-    related_masjid: uuid.UUID = Field(foreign_key="masjids.id", nullable=True)
+    related_masjid: Optional[uuid.UUID] = Field(foreign_key="masjids.id", nullable=True)
 
 
 class User(UserBase, table=True):

@@ -21,6 +21,7 @@ def get_password_hash(password):
 
 def get_user(id: str,  db: Session = Depends(get_session)):
     user = db.get(User, id)
+    print(user)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -35,8 +36,19 @@ def get_user(id: str,  db: Session = Depends(get_session)):
 
     return user
 
+def get_available_users(user: User, db: Session = Depends(get_session)):
+    if user.role == "admin":
+        return db.exec(select(User)).all()
+    else:
+        return db.exec(select(User).where(User.masjid_id == user.masjid_id)).all()
+
 
 def check_user_update_privileges(user: User, user_to_update_id: str):
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"User does not have permission to update user",
+        )
     # Admin can update any user
     if user.role == "admin":
         return True
@@ -51,11 +63,16 @@ def check_user_update_privileges(user: User, user_to_update_id: str):
 
 
 def check_user_masjid_update_privileges(user: User, masjid_to_update_id: str):
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"User does not have permission to update masjid",
+        )
     # Admin can update any masjid
     if user.role == "admin":
         return True
     # Can only update own masjid
-    elif str(user.masjid_id) == masjid_to_update_id:
+    elif str(user.related_masjid) == masjid_to_update_id:
         return True
     else:
         raise HTTPException(
@@ -123,6 +140,18 @@ def update_user(id: str, user: UserUpdate, db: Session = Depends(get_session)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User not found with id: {id}",
         )
+    
+    if not user.role == "admin":
+        if user.role and user.role != user_to_update.role:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"User cannot change their role",
+            )
+        if user.related_masjid and user.related_masjid != user_to_update.related_masjid:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"User cannot change their masjid",
+            )
 
     user_data = user.model_dump(exclude_unset=True)
     for key, value in user_data.items():

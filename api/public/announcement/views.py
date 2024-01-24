@@ -10,6 +10,9 @@ from api.public.announcement.crud import (
 from api.public.announcement.models import Announcement, AnnouncementCreate
 from api.utils.logger import logger_config
 
+from api.auth.authenticate import auth_access_wrapper
+from api.auth.utils import check_user_masjid_update_privileges
+
 router = APIRouter()
 
 logger = logger_config(__name__)
@@ -22,12 +25,23 @@ def get_a_masjid_announcements(masjid_id: str, db: Session = Depends(get_session
 
 
 @router.patch("/{announcement_id}", response_model=Announcement)
-def update_a_masjid_announcement(announcement_id: str, announcement: Announcement, db: Session = Depends(get_session)):
+def update_a_masjid_announcement(
+    announcement_id: str,
+    announcement: Announcement,
+    db: Session = Depends(get_session),
+    user_request=Depends(auth_access_wrapper),
+):
     logger.info("%s.update_a_masjid_announcement: %s", __name__, announcement)
+    check_user_masjid_update_privileges(user_request, announcement.masjid_id)
     return update_masjid_announcement(id=announcement_id, announcement=announcement, db=db)
 
 
 @router.post("", response_model=AnnouncementCreate)
-def create_a_announcement(announcement: AnnouncementCreate, db: Session = Depends(get_session)):
+def create_a_announcement(
+    announcement: AnnouncementCreate,
+    db: Session = Depends(get_session),
+    user_request=Depends(auth_access_wrapper),
+):
     logger.info("%s.create_a_announcement: %s", __name__, announcement)
+    check_user_masjid_update_privileges(user_request, announcement.masjid_id)
     return add_announcement(announcement=announcement, db=db)

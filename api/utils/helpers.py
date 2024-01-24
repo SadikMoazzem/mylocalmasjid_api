@@ -11,5 +11,9 @@ def check_masjid_exists(masjid_id: str, db: Session):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Masjid not found with id: {masjid_id}",
         )
+    if not masjid_exists.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Masjid is not active",
+        )
     return masjid_exists
-

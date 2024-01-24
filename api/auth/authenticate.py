@@ -68,6 +68,7 @@ def decode_access_token(token: str) -> User:
         if payload['sub'] != "access_token":
             raise HTTPException(status_code=401, detail='Invalid token')
         json_t= loads(payload['iss'], object_hook=lambda d: SimpleNamespace(**d))
+        logger.info("%s.decode_access_token: %s", __name__, json_t)
         return User.model_validate(json_t, from_attributes=True)
     except exceptions.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail='Signature has expired')
