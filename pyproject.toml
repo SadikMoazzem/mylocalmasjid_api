@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "my_local_masjid_api"
+version = "0.1.0"
+description = "Main Api for MyLocalMasjid"
+authors = ["Sadik Moazzem <sadik-moazzem@outlook.com>"]
+
+[tool.poetry.dependencies]
+python = "3.9.18"
+mangum = "0.9.2"
+fastapi = "*"
+sqlmodel = "0.0.14"
+uvicorn = "*"
+starlette = "0.35.1"
+pydantic-settings = "*"
+psycopg2-binary = "*"
+pytz = "*"
+autoflake = "*"
+black = "*"
+isort = "*"
+websockets = "^12.0"
+flake8 = "^7.0.0"
+pip-licenses = "^4.3.3"
+mypy = "^1.8.0"
+python-jose = "^3.3.0"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+pyjwt = "^2.8.0"
+
+[tool.poetry.group.alembic.dependencies]
+alembic = "^1.13.1"
+python-dotenv = "^1.0.0"
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+line_length = 100
+
+[tool.flake8]
+max-line-length = 100
+exclude = ".git __pycache__ .mypy_cache .pytest_cache api/migrations"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
