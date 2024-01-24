@@ -1,4 +1,5 @@
 import uuid
+from typing import Optional
 
 from sqlmodel import Field, SQLModel
 
@@ -10,7 +11,7 @@ class FacilityBase(SQLModel):
 
     facility: str
 
-    info: str
+    info: Optional[str]
 
     class Config:
         json_schema_extra = {

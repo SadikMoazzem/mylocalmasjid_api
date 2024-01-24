@@ -1,8 +1,9 @@
 import datetime
 import uuid
+from typing import Optional
 
 from sqlmodel import Field, SQLModel
-from typing import Optional
+
 
 # TODO - Add Optionals to all fields
 # TODO - OnDelete Cascade
