@@ -4,9 +4,12 @@ from fastapi import Depends, HTTPException, status
 from sqlmodel import Session, select
 
 from api.database import get_session
-from api.public.prayer_times.models import PrayerTimes, PrayerTimesCreate
+from api.public.prayer_times.models import PrayerTimes, PrayerTimesRead, PrayerTimesCreate
 from api.utils.helpers import check_masjid_exists
 from api.utils.logger import logger_config
+
+from api.utils.hijri_date import HijriDate
+from api.utils.helpers import get_hijri_adjustment
 
 logger = logger_config(__name__)
 
@@ -22,7 +25,19 @@ def read_prayer_times(masjid_id: str, limit = 1, selected_date: date = None, db:
             .where(PrayerTimes.date >= date.today())
     
     prayer_times = db.exec(prayer_times_query.order_by(PrayerTimes.date).limit(limit)).all()
-    return prayer_times
+    formatted_prayer_times = []
+    adjustment = get_hijri_adjustment(db)
+
+    for prayer_time in prayer_times:
+        hijri = HijriDate.writeIslamicDate(date=prayer_time.date, adjustment=adjustment)
+
+        prayer_time = PrayerTimesRead(
+            **prayer_time.model_dump(),
+            hijri_date=hijri['string'],
+        )
+        formatted_prayer_times.append(prayer_time.model_dump())
+    
+    return formatted_prayer_times
 
 
 def update_single_prayer_times(id: str, prayer_times: PrayerTimes, db: Session = Depends(get_session)):

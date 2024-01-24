@@ -65,5 +65,9 @@ class PrayerTimes(PrayerTimesBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 
 
+class PrayerTimesRead(PrayerTimesBase):
+    id: uuid.UUID
+    hijri_date: str
+
 class PrayerTimesCreate(PrayerTimesBase):
     pass

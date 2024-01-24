@@ -7,7 +7,7 @@ from api.public.prayer_times.crud import (
     read_prayer_times,
     update_single_prayer_times,
 )
-from api.public.prayer_times.models import PrayerTimes, PrayerTimesCreate
+from api.public.prayer_times.models import PrayerTimes, PrayerTimesRead, PrayerTimesCreate
 from api.utils.logger import logger_config
 
 from api.auth.authenticate import auth_access_wrapper
@@ -18,7 +18,7 @@ router = APIRouter()
 logger = logger_config(__name__)
 
 
-@router.get("", response_model=list[PrayerTimes])
+@router.get("", response_model=list[PrayerTimesRead])
 def get_prayer_times(
     masjid_id: str = "",
     date: str = "",
