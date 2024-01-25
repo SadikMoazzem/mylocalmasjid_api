@@ -26,12 +26,29 @@ check:  ## Run static code analysis, checks and license generation
 
 lint:  ## lint the code
 	@printf "$(CYAN)Auto-formatting$(COFF)\n"
-	@poetry run autoflake --remove-all-unused-imports --recursive --remove-unused-variables --in-place api --exclude=migrations
-	@poetry run isort api cli.py --skip api/migrations
+	@poetry run autoflake --remove-all-unused-imports --recursive --remove-unused-variables --in-place mylocalmasjid_api --exclude=migrations
+	@poetry run isort mylocalmasjid_api cli.py --skip mylocalmasjid_api/migrations
 
 deps:  ## install dependencies
 	@printf "$(CYAN)Updating deps$(COFF)\n"
 	@poetry install
 
 local:  ## Run the app locally
-	poetry run uvicorn api.app:app --reload
+	poetry run uvicorn mylocalmasjid_api.app:app --reload
+
+
+setup-prod:
+	# poetry export -f requirements.txt --without-hashes > requirements.txt
+	python3 -m pip install --platform=manylinux1_x86_64 --only-binary=:all: psycopg2-binary==2.8.6 -t prod-venv/lib/python3.9/site-packages
+	python3 -m pip install --platform=manylinux1_x86_64 --only-binary=:all: pydantic==1.8.2 -t prod-venv/lib/python3.9/site-packages
+	python3 -m pip install -r requirements.txt -t prod-venv/lib/python3.9/site-packages
+	rm lambda.zip || true
+	cd prod-venv/lib/python3.9/site-packages && zip -r9 ../../../../lambda.zip .
+	zip -g lambda.zip -r mylocalmasjid_api
+
+build:
+	rm lambda.zip || true
+	poetry build
+	poetry run pip install --upgrade -t package dist/mylocalmasjid_api-0.1.0-py3-none-any.whl
+	cd package
+	zip -r ../lambda.zip . -x '*.pyc'   
