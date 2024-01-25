@@ -33,7 +33,10 @@ jobs:
         echo "List of changed files:" 
         echo $(git diff --name-only HEAD^ HEAD)
     - name: Deploy Modified Files
-      run: |
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10' 
+    - run: |
         # Constants
         S3_BUCKET=mylocalmasjid-api
         S3_KEY=lambda.zip
