@@ -39,7 +39,9 @@ jobs:
         S3_KEY=lambda.zip
         LAMBDA_FUNCTION_NAME=mylocalmasjid-fastapi
         
-        python3 -m pip install poetry
+        python --version
+        python -m pip install poetry
+        poetry install
 
         # Get package ready
         make setup-prod
