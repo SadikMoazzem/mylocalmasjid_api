@@ -38,9 +38,9 @@ local:  ## Run the app locally
 
 
 setup-prod:
-	# poetry export -f requirements.txt --without-hashes > requirements.txt
-	python3 -m pip install --platform=manylinux1_x86_64 --only-binary=:all: psycopg2-binary==2.8.6 -t prod-venv/lib/python3.9/site-packages
-	python3 -m pip install --platform=manylinux1_x86_64 --only-binary=:all: pydantic==1.8.2 -t prod-venv/lib/python3.9/site-packages
+	poetry export -f requirements.txt --without-hashes > requirements.txt
+	# python3 -m pip install --platform=manylinux1_x86_64 --only-binary=:all: psycopg2-binary==2.8.6 -t prod-venv/lib/python3.9/site-packages
+	# python3 -m pip install --platform=manylinux1_x86_64 --only-binary=:all: pydantic==1.8.2 -t prod-venv/lib/python3.9/site-packages
 	python3 -m pip install -r requirements.txt -t prod-venv/lib/python3.9/site-packages
 	rm lambda.zip || true
 	cd prod-venv/lib/python3.9/site-packages && zip -r9 ../../../../lambda.zip .
