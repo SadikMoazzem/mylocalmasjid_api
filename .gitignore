@@ -112,6 +112,11 @@ venv
 ENV/
 env.bak/
 venv.bak/
+prod-venv
+
+lambda.zip
+
+requirements.txt
 
 # Spyder project settings
 .spyderproject

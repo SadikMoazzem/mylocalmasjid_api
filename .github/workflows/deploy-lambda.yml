@@ -1,0 +1,47 @@
+name: Deploy Python Lambda
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.py' # Change to the file extension of the language that you are using.
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 2 # To fetch the current commit and its parent (so we can compare)
+
+    - name: Setup AWS CLI
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-2 # Modify this to your desired AWS region
+
+    - name: Print changed files # To properly debug what is being deployed (It can be removed).
+      run: |
+        echo "List of changed files:" 
+        echo $(git diff --name-only HEAD^ HEAD)
+    - name: Deploy Modified Files
+      run: |
+        # Constants
+        S3_BUCKET=mylocalmasjid-api
+        S3_KEY=lambda.zip
+        LAMBDA_FUNCTION_NAME=mylocalmasjid-fastapi
+        
+        # Get package ready
+        make setup-prod
+
+        # Upload the updated zip to S3
+        aws s3 cp lambda.zip s3://$S3_BUCKET/$S3_KEY
+        # Update Lambda function code
+        aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key $S3_KEY
+        # Cleanup
+        # rm -r lambda_env
+        rm lambda.zip

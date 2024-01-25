@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "my_local_masjid_api"
+name = "mylocalmasjid_api"
 version = "0.1.0"
 description = "Main Api for MyLocalMasjid"
 authors = ["Sadik Moazzem <sadik-moazzem@outlook.com>"]
