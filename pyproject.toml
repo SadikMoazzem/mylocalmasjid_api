@@ -24,6 +24,7 @@ mypy = "^1.8.0"
 python-jose = "^3.3.0"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 pyjwt = "^2.8.0"
+py-bcrypt = "^0.4"
 
 [tool.poetry.group.alembic.dependencies]
 alembic = "^1.13.1"

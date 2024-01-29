@@ -690,6 +690,16 @@ files = [
 ]
 
 [[package]]
+name = "py-bcrypt"
+version = "0.4"
+description = "bcrypt password hashing and key derivation"
+optional = false
+python-versions = "*"
+files = [
+    {file = "py-bcrypt-0.4.tar.gz", hash = "sha256:5fa13bce551468350d66c4883694850570f3da28d6866bb638ba44fe5eabda78"},
+]
+
+[[package]]
 name = "pyasn1"
 version = "0.5.1"
 description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
@@ -1228,4 +1238,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.9.18"
-content-hash = "48342ebbae344a220cd177ef45e1f9cb39e36a8a4df660d152991246f224da85"
+content-hash = "b5606fa8630bdd386b26819fd6eff522ae06e0d0aaf830256d7d291fcce1cb62"
