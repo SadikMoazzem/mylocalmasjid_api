@@ -40,6 +40,10 @@ local:  ## Run the app locally
 setup-prod:
 	poetry export -f requirements.txt --without-hashes > requirements.txt
 	python3 -m pip install -r requirements.txt -t prod-venv/lib/python3.9/site-packages
+	pip download PyNaCl --platform manylinux1_x86_64 --no-deps -d  prod-venv/lib/python3.9/site-packages
+	pip download cffi --platform manylinux1_x86_64 --no-deps -d  prod-venv/lib/python3.9/site-packages
+	pip download bcrypt --platform manylinux1_x86_64 --no-deps -d  prod-venv/lib/python3.9/site-packages
+	pip download cryptography --platform manylinux2014_x86_64 --no-deps -d  prod-venv/lib/python3.9/site-packages
 	cd prod-venv/lib/python3.9/site-packages && zip -r9 ../../../../lambda.zip .
 	zip -g lambda.zip -r mylocalmasjid_api
 
