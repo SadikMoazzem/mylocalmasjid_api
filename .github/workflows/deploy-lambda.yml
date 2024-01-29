@@ -28,23 +28,17 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-2 # Modify this to your desired AWS region
 
-    - name: Print changed files # To properly debug what is being deployed (It can be removed).
-      run: |
-        echo "List of changed files:" 
-        echo $(git diff --name-only HEAD^ HEAD)
-    - name: Deploy Modified Files
+    - name: Bundle files and deploy
       uses: actions/setup-python@v5
       with:
         python-version: '3.9.18' 
     - run: |
         # Constants
-        S3_BUCKET=mylocalmasjid-api
-        S3_KEY=lambda.zip
-        LAMBDA_FUNCTION_NAME=mylocalmasjid-fastapi
-        
-        python --version
+        S3_BUCKET=moazzem-ventures
+        S3_KEY=mylocalmasjid_api.zip
+        LAMBDA_FUNCTION_NAME=mylocalmasjid-api
+
         python -m pip install poetry
-        poetry env use 3.9.18
         poetry install
 
         # Get package ready
@@ -52,8 +46,9 @@ jobs:
 
         # Upload the updated zip to S3
         aws s3 cp lambda.zip s3://$S3_BUCKET/$S3_KEY
+
         # Update Lambda function code
         aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key $S3_KEY
+
         # Cleanup
-        # rm -r lambda_env
         rm lambda.zip
