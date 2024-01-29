@@ -23,7 +23,7 @@ pip-licenses = "^4.3.3"
 mypy = "^1.8.0"
 python-jose = "^3.3.0"
 pyjwt = "^2.8.0"
-bcrypt = "^4.1.2"
+bcrypt = "3.2.2"
 
 [tool.poetry.group.alembic.dependencies]
 alembic = "^1.13.1"
