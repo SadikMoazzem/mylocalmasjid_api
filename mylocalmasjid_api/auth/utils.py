@@ -1,22 +1,32 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from passlib.context import CryptContext
+import bcrypt
 from sqlmodel import Session, select
 
 from mylocalmasjid_api.auth.models import User, UserCreate, UserUpdate
 from mylocalmasjid_api.database import get_session
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+def verify_password(plain_password: str, hashed_password: str):
+    # encoding user password 
+    userBytes = plain_password.encode('utf-8')
+
+    hashBytes = hashed_password.encode('utf-8')
+    
+    # checking password 
+    return bcrypt.checkpw(userBytes, hashBytes)
 
 
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
+def get_password_hash(password: str):
+    # converting password to array of bytes 
+    bytes = password.encode('utf-8')
+  
+    # generating the salt 
+    salt = bcrypt.gensalt() 
+    
+    # Hashing the password 
+    return bcrypt.hashpw(bytes, salt).decode('utf-8')
 
 
 def get_user(id: str,  db: Session = Depends(get_session)):
@@ -40,7 +50,7 @@ def get_available_users(user: User, db: Session = Depends(get_session)):
     if user.role == "admin":
         return db.exec(select(User)).all()
     else:
-        return db.exec(select(User).where(User.masjid_id == user.masjid_id)).all()
+        return db.exec(select(User).where(User.related_masjid == user.related_masjid)).all()
 
 
 def check_user_update_privileges(user: User, user_to_update_id: str):
@@ -90,6 +100,8 @@ def authenticate_user(email: str, password: str, db: Session = Depends(get_sessi
         return False
     if user.active is False:
         return False
+    
+    print(verify_password(password, user.hashed_password))
     return user
 
 
@@ -105,7 +117,7 @@ def create_new_user(user: UserCreate, db: Session = Depends(get_session)):
     user_to_add = User(
         email=validated_user.email,
         full_name=validated_user.full_name,
-        masjid_id=validated_user.masjid_id,
+        related_masjid=validated_user.related_masjid,
         hashed_password=get_password_hash(validated_user.password),
         active=True,
         role=validated_user.role,
