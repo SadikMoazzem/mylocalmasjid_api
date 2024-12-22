@@ -18,12 +18,12 @@ app = FastAPI(
 
 # Update allow_origins to restrict allowed domains
 allowed_origins = [
-    "http://localhost:*",  # Allow any localhost port
-    "https://localhost:*", # Allow secure localhost connections
+    "http://localhost:3000",
+    "https://localhost:3000",
     "https://*.salahtimez.com",
     "https://*.mylocalmasjid.com", 
     "https://*.sadikmoazzem.com",
-    "https://deploy-preview-*--salahtimez.netlify.app"  # Allow Netlify deploy previews
+    "https://*.netlify.app"  # Allow Netlify deploy previews
 ]
 
 app.add_middleware(
