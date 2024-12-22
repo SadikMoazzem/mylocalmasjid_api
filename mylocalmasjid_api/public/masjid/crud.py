@@ -13,8 +13,11 @@ def create_masjid(masjid: MasjidCreate, db: Session = Depends(get_session)):
     return masjid_to_db
 
 
-def read_masjids(offset: int = 0, limit: int = 20, db: Session = Depends(get_session)):
-    masjids = db.exec(select(Masjid).offset(offset).limit(limit)).all()
+def read_masjids(search: str, offset: int = 0, limit: int = 20, db: Session = Depends(get_session)):
+    masjids_query = select(Masjid)
+    if search:
+        masjids_query = masjids_query.filter(Masjid.name.ilike(f"%{search}%"))
+    masjids = db.exec(masjids_query.offset(offset).limit(limit)).all()
     print(masjids)
     return masjids
 

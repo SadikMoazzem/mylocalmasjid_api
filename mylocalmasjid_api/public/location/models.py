@@ -6,21 +6,13 @@ from sqlmodel import Field, SQLModel
 
 class LocationBase(SQLModel):
     __tablename__ = 'locations'
-
     masjid_id: uuid.UUID = Field(foreign_key="masjids.id", nullable=True)
-
     geoHash: str
-
     city: str
-
     country: str
-
     full_address: str
-
     latitude: float
-
     longitude: float
-    
     __table_args__ = (
         PrimaryKeyConstraint("id"),
         {},

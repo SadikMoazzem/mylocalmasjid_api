@@ -33,11 +33,11 @@ jobs:
       with:
         python-version: '3.9.18' 
     - run: |
-        # Install Poetry
         S3_BUCKET=moazzem-ventures
         S3_KEY=mylocalmasjid_api.zip
         LAMBDA_FUNCTION_NAME=mylocalmasjid-api
 
+        # Install Poetry
         python -m pip install poetry
 
         # Get package ready

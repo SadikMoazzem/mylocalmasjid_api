@@ -36,7 +36,6 @@ deps:  ## install dependencies
 local:  ## Run the app locally
 	poetry run uvicorn mylocalmasjid_api.app:app --reload
 
-
 setup-prod:
 	poetry export -f requirements.txt --without-hashes > requirements.txt
 	# python3 -m pip download PyNaCl --platform manylinux1_x86_64 --no-deps -d  prod-venv/lib/python3.9/site-packages
