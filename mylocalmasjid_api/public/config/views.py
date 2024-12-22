@@ -19,7 +19,7 @@ def get_all_options(db: Session = Depends(get_session)):
     return get_config(db=db)
 
 
-@router.patch("/{config_id}", response_model=ConfigCreate)
+@router.patch("/config/{config_id}", response_model=ConfigCreate)
 def update_config(
     config_id: str,
     config: Config,
@@ -36,7 +36,7 @@ def update_config(
     return update_config_option(id=config_id, config=config, db=db)
 
 
-@router.post("", response_model=ConfigCreate)
+@router.post("/config", response_model=ConfigCreate)
 def create_a_config(
     config: Config,
     db: Session = Depends(get_session),

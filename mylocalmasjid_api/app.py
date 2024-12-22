@@ -16,9 +16,17 @@ app = FastAPI(
     description=settings.DESCRIPTION,
 )
 
+# Update allow_origins to restrict allowed domains
+allowed_origins = [
+    "http://localhost",
+    "https://*.salahtimez.com",
+    "https://*.mylocalmasjid.com",
+    "https://*.sadikmoazzem.com"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"],

@@ -13,6 +13,6 @@ api.include_router(
 
 api.include_router(
     config.router,
-    prefix="/config",
+    prefix="/configs",
     tags=["Config"]
 )
