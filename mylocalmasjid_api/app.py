@@ -23,15 +23,21 @@ allowed_origins = [
     "https://*.salahtimez.com",
     "https://*.mylocalmasjid.com", 
     "https://*.sadikmoazzem.com",
-    "https://*.netlify.app"  # Allow Netlify deploy previews
+    "https://*--salahtimez.netlify.app"  # Allow Netlify deploy previews
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=[
+        "http://localhost:3000",
+        "https://localhost:3000",
+    ],
+    allow_origin_regex="https://.*\.(salahtimez\.com|mylocalmasjid\.com|sadikmoazzem\.com|netlify\.app)$",
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"],
+    expose_headers=[],
+    max_age=600
 )
 
 app.include_router(auth_api)
