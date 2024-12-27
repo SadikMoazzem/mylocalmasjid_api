@@ -11,11 +11,18 @@ logger = logger_config(__name__)
 
 def create_location(masjid_location: LocationCreate, db: Session = Depends(get_session)):
     location_to_db = LocationCreate.model_validate(masjid_location)
-    check_masjid_exists(location_to_db.masjid_id, db)
-    db.add(location_to_db)
+    # Convert masjid_id to string for check_masjid_exists
+    masjid_id = str(location_to_db.masjid_id) if location_to_db.masjid_id else None
+    check_masjid_exists(masjid_id, db)
+    
+    # Convert LocationCreate to Location before adding to db
+    location_data = location_to_db.model_dump()
+    db_location = Location(**location_data)
+    
+    db.add(db_location)
     db.commit()
-    db.refresh(location_to_db)
-    return location_to_db
+    db.refresh(db_location)
+    return db_location
 
 
 # Find nearest locations to lat lon

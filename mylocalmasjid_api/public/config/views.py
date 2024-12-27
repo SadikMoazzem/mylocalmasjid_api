@@ -13,7 +13,7 @@ router = APIRouter()
 logger = logger_config(__name__)
 
 
-@router.get("", response_model=Config)
+@router.get("", response_model=list[Config])
 def get_all_options(db: Session = Depends(get_session)):
     logger.info("%s.get_all_options: %s", __name__)
     return get_config(db=db)

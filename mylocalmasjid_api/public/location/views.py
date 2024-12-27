@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 
 from mylocalmasjid_api.database import get_session
@@ -40,4 +40,4 @@ def create_a_location(
 ):
     logger.info("%s.create_a_location: %s", __name__, location)
     check_user_masjid_update_privileges(user_request, location.masjid_id)
-    return create_location(location=location, db=db)
+    return create_location(masjid_location=location, db=db)

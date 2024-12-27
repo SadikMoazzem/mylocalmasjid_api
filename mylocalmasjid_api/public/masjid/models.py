@@ -1,5 +1,5 @@
 import uuid
-from typing import Optional
+from typing import Optional, List
 
 from sqlmodel import Field, SQLModel
 
@@ -45,3 +45,11 @@ class MasjidUpdate(MasjidBase):
     type: str
     locale: str
     madhab: str
+
+
+class PaginatedMasjids(SQLModel):
+    items: List[MasjidRead]
+    total: int
+    page: int
+    size: int
+    pages: int

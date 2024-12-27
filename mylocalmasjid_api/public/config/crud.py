@@ -12,7 +12,7 @@ def get_config(db: Session = Depends(get_session)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Config Options not found",
         )
-    return [config_option.model_dump() for config_option in config_options]
+    return config_options
 
 
 def update_config_option(id: str, config: ConfigCreate, db: Session = Depends(get_session)):

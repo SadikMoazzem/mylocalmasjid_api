@@ -32,7 +32,7 @@ app.add_middleware(
         "http://localhost:3000",
         "https://localhost:3000",
     ],
-    allow_origin_regex="https://.*\.(salahtimez\.com|mylocalmasjid\.com|sadikmoazzem\.com|netlify\.app)$",
+    allow_origin_regex="(http://localhost:[0-9]+|https://localhost:[0-9]+|https://.*\.(salahtimez\.com|mylocalmasjid\.com|sadikmoazzem\.com|netlify\.app))$",
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"],

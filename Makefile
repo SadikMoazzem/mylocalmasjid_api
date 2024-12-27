@@ -9,7 +9,7 @@ GRAY ?= \033[0;37m
 COFF ?= \033[0m
 
 # Mark non-file targets as PHONY
-.PHONY: all docker docker-support docker-shell docker-db lint test deps
+.PHONY: all docker docker-support docker-shell docker-db lint test deps openapi
 .EXPORT_ALL_VARIABLES:
 .DEFAULT: help
 APP_NAME := mylocalmasjid
@@ -54,3 +54,7 @@ build:
 	zip -r ../lambda.zip . -x '*.pyc'
 	# python3 -m pip install --platform=manylinux1_x86_64 --only-binary=:all: psycopg2-binary==2.8.6 -t prod-venv/lib/python3.9/site-packages
 	# python3 -m pip install --platform=manylinux1_x86_64 --only-binary=:all: pydantic==1.8.2 -t prod-venv/lib/python3.9/site-packages
+
+openapi:  ## Generate OpenAPI schema
+	@printf "$(CYAN)Generating OpenAPI schema$(COFF)\n"
+	@PYTHONPATH=$(PYTHONPATH):. poetry run python generate_openapi.py

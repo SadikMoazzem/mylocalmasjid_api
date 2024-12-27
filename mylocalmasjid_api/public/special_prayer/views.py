@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends
+from typing import List
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 
 from mylocalmasjid_api.database import get_session
@@ -18,7 +19,7 @@ router = APIRouter()
 logger = logger_config(__name__)
 
 
-@router.get("", response_model=SpecialPrayer)
+@router.get("", response_model=List[SpecialPrayer])
 def get_a_masjid_special_prayers(masjid_id: str, db: Session = Depends(get_session)):
     logger.info("%s.get_a_masjid_special_prayers: %s", __name__, db)
     return get_masjid_special_prayers(masjid_id=masjid_id, db=db)

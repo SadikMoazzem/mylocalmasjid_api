@@ -82,12 +82,21 @@ def check_user_masjid_update_privileges(user: User, masjid_to_update_id: str):
     if user.role == "admin":
         return True
     # Can only update own masjid
-    elif str(user.related_masjid) == masjid_to_update_id:
-        return True
-    else:
+    try:
+        # Convert both IDs to strings for comparison
+        user_masjid_id = str(user.related_masjid) if user.related_masjid else None
+        update_masjid_id = str(masjid_to_update_id) if masjid_to_update_id else None
+        if user_masjid_id == update_masjid_id:
+            return True
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"User does not have permission to update masjid",
+            )
+    except ValueError:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"User does not have permission to update masjid",
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid masjid ID format",
         )
 
 
@@ -98,8 +107,8 @@ def authenticate_user(email: str, password: str, db: Session = Depends(get_sessi
         return False
     if not verify_password(password, user.hashed_password):
         return False
-    if user.active is False:
-        return False
+    # if user.active is False:
+    #     return False
     
     print(verify_password(password, user.hashed_password))
     return user

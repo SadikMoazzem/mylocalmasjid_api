@@ -9,39 +9,48 @@ from sqlmodel import Field, SQLModel
 class PrayerType(str, enum.Enum):
     jummuah = "jummuah"
     eid = "eid"
+    tahajud = "tahajud"
+    taraweeh = "taraweeh"
+    other = "other"
 
 class SpecialPrayerBase(SQLModel):
     __tablename__ = 'special_prayers'
 
     masjid_id: uuid.UUID = Field(foreign_key="masjids.id", nullable=True)
 
-    date: Optional[date]
+    # Store dates in a single format
+    date_start: Optional[date] = Field(nullable=True)
+    date_end: Optional[date] = Field(nullable=True)
+    
+    # Whether the provided dates are Hijri
+    is_hijri: bool = Field(default=False)
 
     label: str
 
-    # type: PrayerType = Field(sa_column=Column(Enum(PrayerType)))
     type: PrayerType = Field()
 
-    info: Optional[str]
+    info: Optional[str] = Field(nullable=True)
 
-    imam: Optional[str]
+    imam: Optional[str] = Field(nullable=True)
 
-    start_time: Optional[time]
+    start_time: Optional[time] = Field(nullable=True)
 
-    jammat_time: Optional[time]
+    jammat_time: Optional[time] = Field(nullable=True)
 
     class Config:
         json_schema_extra = {
             "example": {
                 "id": "123e4567-e89b-12d3-a456-426614174000",
                 "masjid_id": "East London Mosque",
-                "date": "2021-01-01",
-                "label": "Jummuah",
-                "type": "jummuah",
-                "info": "Wudu area is located in the basement",
+                "date_start": "1445-05-17",
+                "date_end": "1445-06-17",
+                "is_hijri": True,
+                "label": "Taraweeh",
+                "type": "taraweeh",
+                "info": "Ramadan night prayers",
                 "imam": "Muhammad",
-                "start_time": "13:00",
-                "jammat_time": "13:30"
+                "start_time": "22:00",
+                "jammat_time": "22:15"
             }
         }
 

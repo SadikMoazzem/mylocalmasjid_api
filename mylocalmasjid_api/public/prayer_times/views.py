@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException, status
 from sqlmodel import Session
 
 from mylocalmasjid_api.database import get_session
@@ -29,8 +29,9 @@ def get_prayer_times(
     return read_prayer_times(masjid_id=masjid_id, selected_date=date, limit=limit, db=db)
 
 
-@router.patch("/${prayer_times_id}", response_model=PrayerTimes)
+@router.patch("/{prayer_times_id}", response_model=PrayerTimes)
 def update_prayer_times(
+    masjid_id: str,
     prayer_times_id: str,
     prayer_times: PrayerTimes,
     db: Session = Depends(get_session),

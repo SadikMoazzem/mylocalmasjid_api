@@ -52,11 +52,16 @@ def update_single_prayer_times(id: str, prayer_times: PrayerTimes, db: Session =
     
     logger.info("%s.update_single_prayer_times: %s", __name__, prayer_times)
     logger.info("%s.update_single_prayer_times [ROW]: %s", __name__, prayer_times_row)
-    if prayer_times_row.date != prayer_times.date:
+    
+    # Convert both IDs to strings for comparison
+    prayer_times_id = str(prayer_times.id) if prayer_times.id else None
+    id = str(id) if id else None
+    if prayer_times_id != id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Date in obj does not match date in body",
+            detail=f"id in url does not match id in body",
         )
+    
     # Goes through new data and updates the row
     prayer_times_data = prayer_times.model_dump(exclude_unset=True)
     for key, value in prayer_times_data.items():
@@ -71,6 +76,14 @@ def batch_add_prayer_times(masjid_id: str, prayer_times: list[PrayerTimesCreate]
     prayer_times_to_add = []
 
     for prayer_time in prayer_times:
+        # Convert both IDs to strings for comparison
+        prayer_time_masjid_id = str(prayer_time.masjid_id) if prayer_time.masjid_id else None
+        masjid_id = str(masjid_id) if masjid_id else None
+        if prayer_time_masjid_id != masjid_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Masjid id in prayer time does not match masjid id in url",
+            )
         exists = db.exec(
             select(PrayerTimes).where(PrayerTimes.masjid_id == masjid_id).where(PrayerTimes.date == prayer_time.date)
         ).first()

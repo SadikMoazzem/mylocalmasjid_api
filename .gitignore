@@ -4,6 +4,9 @@ __pycache__/
 *$py.class
 __pycache__
 
+# Frontend app
+admin_web_app/
+
 # C extensions
 *.so
 
@@ -139,3 +142,5 @@ dmypy.json
 keys.txt
 
 .vscode/
+
+.DS_Store

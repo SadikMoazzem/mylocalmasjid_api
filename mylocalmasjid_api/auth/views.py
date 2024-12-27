@@ -97,7 +97,7 @@ def get_current_user(
 
 
 # Update User
-@router.put('/user/${user_id}', response_model=UserRead)
+@router.put('/user/{user_id}', response_model=UserRead)
 def update_a_user(
     user_id: str,
     user: UserUpdate,
@@ -135,7 +135,7 @@ def create_user(
 
 
 # Change password endpoint.
-@router.put('/user/${user_id}/password-reset')
+@router.patch('/user/{user_id}/password-reset')
 def change_a_password(
     user_id: str,
     change_obj: UserPasswordReset,
