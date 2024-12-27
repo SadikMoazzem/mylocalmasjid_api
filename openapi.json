@@ -1,0 +1,3020 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "My Local Masjid API - Development",
+    "description": "Main Api for My Local Masjid",
+    "version": "0.1"
+  },
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Login",
+        "operationId": "login_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthTokens"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/refresh": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update Token",
+        "operationId": "update_token_refresh_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthAccessToken"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get Users",
+        "operationId": "get_users_users_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/UserRead"
+                  },
+                  "type": "array",
+                  "title": "Response Get Users Users Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get Current User",
+        "operationId": "get_current_user_user_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create User",
+        "operationId": "create_user_user_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/user/{user_id}": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update A User",
+        "operationId": "update_a_user_user__user_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}/password-reset": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Change A Password",
+        "operationId": "change_a_password_user__user_id__password_reset_patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPasswordReset"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/masjids": {
+      "get": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Get Masjids",
+        "operationId": "get_masjids_masjids_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Search"
+            }
+          },
+          {
+            "name": "type_filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Type Filter"
+            }
+          },
+          {
+            "name": "madhab_filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Madhab Filter"
+            }
+          },
+          {
+            "name": "locale_filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Locale Filter"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "exclusiveMinimum": 0,
+              "default": 20,
+              "title": "Size"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedMasjids"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/masjids/masjid/{masjid_id}": {
+      "get": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Get A Masjid",
+        "operationId": "get_a_masjid_masjids_masjid__masjid_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "masjid_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masjid Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasjidRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Update A Masjid",
+        "operationId": "update_a_masjid_masjids_masjid__masjid_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "masjid_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masjid Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MasjidUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasjidUpdate"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/masjids/masjid": {
+      "post": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Create A Masjid",
+        "operationId": "create_a_masjid_masjids_masjid_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MasjidCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasjidRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/masjids/masjid/{masjid_id}/prayer-times": {
+      "get": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Get Prayer Times",
+        "operationId": "get_prayer_times_masjids_masjid__masjid_id__prayer_times_get",
+        "parameters": [
+          {
+            "name": "masjid_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masjid Id"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Date"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "lte": 1,
+              "default": 1,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PrayerTimesRead"
+                  },
+                  "title": "Response Get Prayer Times Masjids Masjid  Masjid Id  Prayer Times Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/masjids/masjid/{masjid_id}/prayer-times/{prayer_times_id}": {
+      "patch": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Update Prayer Times",
+        "operationId": "update_prayer_times_masjids_masjid__masjid_id__prayer_times__prayer_times_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "masjid_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masjid Id"
+            }
+          },
+          {
+            "name": "prayer_times_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Prayer Times Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrayerTimes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrayerTimes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/masjids/masjid/{masjid_id}/prayer-times/batch": {
+      "post": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Batch Add Prayer Times",
+        "operationId": "batch_add_prayer_times_masjids_masjid__masjid_id__prayer_times_batch_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "masjid_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masjid Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PrayerTimesCreate"
+                },
+                "title": "Prayer Times"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PrayerTimesCreate"
+                  },
+                  "title": "Response Batch Add Prayer Times Masjids Masjid  Masjid Id  Prayer Times Batch Post"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/masjids/masjid/{masjid_id}/location": {
+      "get": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Get A Masjid Location",
+        "operationId": "get_a_masjid_location_masjids_masjid__masjid_id__location_get",
+        "parameters": [
+          {
+            "name": "masjid_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masjid Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Location"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Create A Location",
+        "operationId": "create_a_location_masjids_masjid__masjid_id__location_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocationCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationCreate"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/masjids/masjid/{masjid_id}/location/{location_id}": {
+      "patch": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Update A Masjid Location",
+        "operationId": "update_a_masjid_location_masjids_masjid__masjid_id__location__location_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "location_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Location Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Location"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Location"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/masjids/masjid/{masjid_id}/announcement": {
+      "get": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Get A Masjid Announcements",
+        "operationId": "get_a_masjid_announcements_masjids_masjid__masjid_id__announcement_get",
+        "parameters": [
+          {
+            "name": "masjid_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masjid Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Announcement"
+                  },
+                  "title": "Response Get A Masjid Announcements Masjids Masjid  Masjid Id  Announcement Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Create A Announcement",
+        "operationId": "create_a_announcement_masjids_masjid__masjid_id__announcement_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "masjid_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masjid Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnnouncementCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnnouncementCreate"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/masjids/masjid/{masjid_id}/announcement/{announcement_id}": {
+      "patch": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Update A Masjid Announcement",
+        "operationId": "update_a_masjid_announcement_masjids_masjid__masjid_id__announcement__announcement_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "masjid_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masjid Id"
+            }
+          },
+          {
+            "name": "announcement_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Announcement Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Announcement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Announcement"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/masjids/masjid/{masjid_id}/facility": {
+      "get": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Get A Masjid Facilities",
+        "operationId": "get_a_masjid_facilities_masjids_masjid__masjid_id__facility_get",
+        "parameters": [
+          {
+            "name": "masjid_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masjid Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Facility"
+                  },
+                  "title": "Response Get A Masjid Facilities Masjids Masjid  Masjid Id  Facility Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Create A Facility",
+        "operationId": "create_a_facility_masjids_masjid__masjid_id__facility_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FacilityCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FacilityCreate"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/masjids/masjid/{masjid_id}/facility/{facility_id}": {
+      "patch": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Update A Masjid Facility",
+        "operationId": "update_a_masjid_facility_masjids_masjid__masjid_id__facility__facility_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "facility_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Facility Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Facility"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Facility"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/masjids/masjid/{masjid_id}/special-prayers": {
+      "get": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Get A Masjid Special Prayers",
+        "operationId": "get_a_masjid_special_prayers_masjids_masjid__masjid_id__special_prayers_get",
+        "parameters": [
+          {
+            "name": "masjid_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masjid Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SpecialPrayer"
+                  },
+                  "title": "Response Get A Masjid Special Prayers Masjids Masjid  Masjid Id  Special Prayers Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Create A Special Prayer",
+        "operationId": "create_a_special_prayer_masjids_masjid__masjid_id__special_prayers_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "masjid_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Masjid Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpecialPrayerCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpecialPrayerCreate"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/masjids/masjid/{masjid_id}/special-prayers/{special_prayer_id}": {
+      "patch": {
+        "tags": [
+          "Masjid"
+        ],
+        "summary": "Update A Masjid Special Prayer",
+        "operationId": "update_a_masjid_special_prayer_masjids_masjid__masjid_id__special_prayers__special_prayer_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "special_prayer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Special Prayer Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpecialPrayer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpecialPrayer"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/configs": {
+      "get": {
+        "tags": [
+          "Config"
+        ],
+        "summary": "Get All Options",
+        "operationId": "get_all_options_configs_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Config"
+                  },
+                  "type": "array",
+                  "title": "Response Get All Options Configs Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/configs/config/{config_id}": {
+      "patch": {
+        "tags": [
+          "Config"
+        ],
+        "summary": "Update Config",
+        "operationId": "update_config_configs_config__config_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "config_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Config Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Config"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigCreate"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/configs/config": {
+      "post": {
+        "tags": [
+          "Config"
+        ],
+        "summary": "Create A Config",
+        "operationId": "create_a_config_configs_config_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Config"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigCreate"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Announcement": {
+        "properties": {
+          "masjid_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Masjid Id"
+          },
+          "date_issued": {
+            "type": "string",
+            "format": "date",
+            "title": "Date Issued"
+          },
+          "date_expired": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Expired"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "masjid_id",
+          "date_issued",
+          "date_expired",
+          "message"
+        ],
+        "title": "Announcement",
+        "example": {
+          "date_expired": "2021-01-01",
+          "date_issued": "2021-01-01",
+          "masjid_id": "East London Mosque",
+          "message": "Wudu area is located in the basement"
+        }
+      },
+      "AnnouncementCreate": {
+        "properties": {
+          "masjid_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Masjid Id"
+          },
+          "date_issued": {
+            "type": "string",
+            "format": "date",
+            "title": "Date Issued"
+          },
+          "date_expired": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Expired"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "masjid_id",
+          "date_issued",
+          "date_expired",
+          "message"
+        ],
+        "title": "AnnouncementCreate",
+        "example": {
+          "date_expired": "2021-01-01",
+          "date_issued": "2021-01-01",
+          "masjid_id": "East London Mosque",
+          "message": "Wudu area is located in the basement"
+        }
+      },
+      "AuthAccessToken": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token"
+        ],
+        "title": "AuthAccessToken"
+      },
+      "AuthTokens": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "refresh_token": {
+            "type": "string",
+            "title": "Refresh Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "refresh_token"
+        ],
+        "title": "AuthTokens"
+      },
+      "Config": {
+        "properties": {
+          "config_option": {
+            "$ref": "#/components/schemas/ConfigOption"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "config_option",
+          "value"
+        ],
+        "title": "Config",
+        "example": {
+          "config_option": "hijri_adjustment",
+          "value": "0"
+        }
+      },
+      "ConfigCreate": {
+        "properties": {
+          "config_option": {
+            "$ref": "#/components/schemas/ConfigOption"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          }
+        },
+        "type": "object",
+        "required": [
+          "config_option",
+          "value"
+        ],
+        "title": "ConfigCreate",
+        "example": {
+          "config_option": "hijri_adjustment",
+          "value": "0"
+        }
+      },
+      "ConfigOption": {
+        "type": "string",
+        "const": "hijri_adjustment",
+        "title": "ConfigOption"
+      },
+      "Facility": {
+        "properties": {
+          "masjid_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Masjid Id"
+          },
+          "facility": {
+            "type": "string",
+            "title": "Facility"
+          },
+          "info": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Info"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "masjid_id",
+          "facility",
+          "info"
+        ],
+        "title": "Facility",
+        "example": {
+          "facility": "Wudu",
+          "info": "Wudu area is located in the basement",
+          "masjid_id": "East London Mosque"
+        }
+      },
+      "FacilityCreate": {
+        "properties": {
+          "masjid_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Masjid Id"
+          },
+          "facility": {
+            "type": "string",
+            "title": "Facility"
+          },
+          "info": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Info"
+          }
+        },
+        "type": "object",
+        "required": [
+          "masjid_id",
+          "facility",
+          "info"
+        ],
+        "title": "FacilityCreate",
+        "example": {
+          "facility": "Wudu",
+          "info": "Wudu area is located in the basement",
+          "masjid_id": "East London Mosque"
+        }
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Location": {
+        "properties": {
+          "masjid_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Masjid Id"
+          },
+          "geoHash": {
+            "type": "string",
+            "title": "Geohash"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "country": {
+            "type": "string",
+            "title": "Country"
+          },
+          "full_address": {
+            "type": "string",
+            "title": "Full Address"
+          },
+          "latitude": {
+            "type": "number",
+            "title": "Latitude"
+          },
+          "longitude": {
+            "type": "number",
+            "title": "Longitude"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "masjid_id",
+          "geoHash",
+          "city",
+          "country",
+          "full_address",
+          "latitude",
+          "longitude"
+        ],
+        "title": "Location",
+        "example": {
+          "city": "London",
+          "country": "United Kingdom",
+          "full_address": "82-92 Whitechapel Rd, London E1 1JQ, United Kingdom",
+          "geoHash": "gcpv0y",
+          "latitude": 51.517,
+          "longitude": -0.066,
+          "masjid_id": "East London Mosque"
+        }
+      },
+      "LocationCreate": {
+        "properties": {
+          "masjid_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Masjid Id"
+          },
+          "geoHash": {
+            "type": "string",
+            "title": "Geohash"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "country": {
+            "type": "string",
+            "title": "Country"
+          },
+          "full_address": {
+            "type": "string",
+            "title": "Full Address"
+          },
+          "latitude": {
+            "type": "number",
+            "title": "Latitude"
+          },
+          "longitude": {
+            "type": "number",
+            "title": "Longitude"
+          }
+        },
+        "type": "object",
+        "required": [
+          "masjid_id",
+          "geoHash",
+          "city",
+          "country",
+          "full_address",
+          "latitude",
+          "longitude"
+        ],
+        "title": "LocationCreate",
+        "example": {
+          "city": "London",
+          "country": "United Kingdom",
+          "full_address": "82-92 Whitechapel Rd, London E1 1JQ, United Kingdom",
+          "geoHash": "gcpv0y",
+          "latitude": 51.517,
+          "longitude": -0.066,
+          "masjid_id": "East London Mosque"
+        }
+      },
+      "MasjidCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "locale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          },
+          "madhab": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Madhab"
+          },
+          "website": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website"
+          },
+          "has_times": {
+            "type": "boolean",
+            "title": "Has Times"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "locale",
+          "madhab",
+          "website",
+          "has_times"
+        ],
+        "title": "MasjidCreate",
+        "example": {
+          "locale": "English",
+          "madhab": "Hanafi",
+          "name": "East London Mosque",
+          "type": "Masjid",
+          "website": "https://www.eastlondonmosque.com/"
+        }
+      },
+      "MasjidRead": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "locale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          },
+          "madhab": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Madhab"
+          },
+          "website": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website"
+          },
+          "has_times": {
+            "type": "boolean",
+            "title": "Has Times"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "default": true
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "locale",
+          "madhab",
+          "website",
+          "has_times",
+          "id"
+        ],
+        "title": "MasjidRead",
+        "example": {
+          "locale": "English",
+          "madhab": "Hanafi",
+          "name": "East London Mosque",
+          "type": "Masjid",
+          "website": "https://www.eastlondonmosque.com/"
+        }
+      },
+      "MasjidUpdate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "locale": {
+            "type": "string",
+            "title": "Locale"
+          },
+          "madhab": {
+            "type": "string",
+            "title": "Madhab"
+          },
+          "website": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website"
+          },
+          "has_times": {
+            "type": "boolean",
+            "title": "Has Times"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "locale",
+          "madhab",
+          "website",
+          "has_times"
+        ],
+        "title": "MasjidUpdate",
+        "example": {
+          "locale": "English",
+          "madhab": "Hanafi",
+          "name": "East London Mosque",
+          "type": "Masjid",
+          "website": "https://www.eastlondonmosque.com/"
+        }
+      },
+      "PaginatedMasjids": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MasjidRead"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "size": {
+            "type": "integer",
+            "title": "Size"
+          },
+          "pages": {
+            "type": "integer",
+            "title": "Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "size",
+          "pages"
+        ],
+        "title": "PaginatedMasjids"
+      },
+      "PrayerTimes": {
+        "properties": {
+          "masjid_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Masjid Id"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "default": true
+          },
+          "fajr_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Fajr Start"
+          },
+          "fajr_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Fajr Jammat"
+          },
+          "sunrise": {
+            "type": "string",
+            "format": "time",
+            "title": "Sunrise"
+          },
+          "dhur_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Dhur Start"
+          },
+          "dhur_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Dhur Jammat"
+          },
+          "asr_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Asr Start"
+          },
+          "asr_start_1": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asr Start 1"
+          },
+          "asr_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Asr Jammat"
+          },
+          "magrib_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Magrib Start"
+          },
+          "magrib_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Magrib Jammat"
+          },
+          "isha_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Isha Start"
+          },
+          "isha_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Isha Jammat"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "masjid_id",
+          "date",
+          "fajr_start",
+          "fajr_jammat",
+          "sunrise",
+          "dhur_start",
+          "dhur_jammat",
+          "asr_start",
+          "asr_start_1",
+          "asr_jammat",
+          "magrib_start",
+          "magrib_jammat",
+          "isha_start",
+          "isha_jammat"
+        ],
+        "title": "PrayerTimes",
+        "example": {
+          "asr_jammat": "16:00:00",
+          "asr_start": "15:00:00",
+          "asr_start_1": "15:30:00",
+          "date": "2021-08-01",
+          "dhur_jammat": "12:30:00",
+          "dhur_start": "12:00:00",
+          "fajr_jammat": "04:30:00",
+          "fajr_start": "04:00:00",
+          "isha_jammat": "21:30:00",
+          "isha_start": "21:00:00",
+          "magrib_jammat": "18:30:00",
+          "magrib_start": "18:00:00",
+          "masjid_id": "East London Mosque",
+          "sunrise": "05:00:00"
+        }
+      },
+      "PrayerTimesCreate": {
+        "properties": {
+          "masjid_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Masjid Id"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "default": true
+          },
+          "fajr_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Fajr Start"
+          },
+          "fajr_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Fajr Jammat"
+          },
+          "sunrise": {
+            "type": "string",
+            "format": "time",
+            "title": "Sunrise"
+          },
+          "dhur_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Dhur Start"
+          },
+          "dhur_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Dhur Jammat"
+          },
+          "asr_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Asr Start"
+          },
+          "asr_start_1": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asr Start 1"
+          },
+          "asr_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Asr Jammat"
+          },
+          "magrib_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Magrib Start"
+          },
+          "magrib_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Magrib Jammat"
+          },
+          "isha_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Isha Start"
+          },
+          "isha_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Isha Jammat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "masjid_id",
+          "date",
+          "fajr_start",
+          "fajr_jammat",
+          "sunrise",
+          "dhur_start",
+          "dhur_jammat",
+          "asr_start",
+          "asr_start_1",
+          "asr_jammat",
+          "magrib_start",
+          "magrib_jammat",
+          "isha_start",
+          "isha_jammat"
+        ],
+        "title": "PrayerTimesCreate",
+        "example": {
+          "asr_jammat": "16:00:00",
+          "asr_start": "15:00:00",
+          "asr_start_1": "15:30:00",
+          "date": "2021-08-01",
+          "dhur_jammat": "12:30:00",
+          "dhur_start": "12:00:00",
+          "fajr_jammat": "04:30:00",
+          "fajr_start": "04:00:00",
+          "isha_jammat": "21:30:00",
+          "isha_start": "21:00:00",
+          "magrib_jammat": "18:30:00",
+          "magrib_start": "18:00:00",
+          "masjid_id": "East London Mosque",
+          "sunrise": "05:00:00"
+        }
+      },
+      "PrayerTimesRead": {
+        "properties": {
+          "masjid_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Masjid Id"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "default": true
+          },
+          "fajr_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Fajr Start"
+          },
+          "fajr_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Fajr Jammat"
+          },
+          "sunrise": {
+            "type": "string",
+            "format": "time",
+            "title": "Sunrise"
+          },
+          "dhur_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Dhur Start"
+          },
+          "dhur_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Dhur Jammat"
+          },
+          "asr_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Asr Start"
+          },
+          "asr_start_1": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asr Start 1"
+          },
+          "asr_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Asr Jammat"
+          },
+          "magrib_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Magrib Start"
+          },
+          "magrib_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Magrib Jammat"
+          },
+          "isha_start": {
+            "type": "string",
+            "format": "time",
+            "title": "Isha Start"
+          },
+          "isha_jammat": {
+            "type": "string",
+            "format": "time",
+            "title": "Isha Jammat"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "hijri_date": {
+            "type": "string",
+            "title": "Hijri Date"
+          }
+        },
+        "type": "object",
+        "required": [
+          "masjid_id",
+          "date",
+          "fajr_start",
+          "fajr_jammat",
+          "sunrise",
+          "dhur_start",
+          "dhur_jammat",
+          "asr_start",
+          "asr_start_1",
+          "asr_jammat",
+          "magrib_start",
+          "magrib_jammat",
+          "isha_start",
+          "isha_jammat",
+          "id",
+          "hijri_date"
+        ],
+        "title": "PrayerTimesRead",
+        "example": {
+          "asr_jammat": "16:00:00",
+          "asr_start": "15:00:00",
+          "asr_start_1": "15:30:00",
+          "date": "2021-08-01",
+          "dhur_jammat": "12:30:00",
+          "dhur_start": "12:00:00",
+          "fajr_jammat": "04:30:00",
+          "fajr_start": "04:00:00",
+          "isha_jammat": "21:30:00",
+          "isha_start": "21:00:00",
+          "magrib_jammat": "18:30:00",
+          "magrib_start": "18:00:00",
+          "masjid_id": "East London Mosque",
+          "sunrise": "05:00:00"
+        }
+      },
+      "PrayerType": {
+        "type": "string",
+        "enum": [
+          "jummuah",
+          "eid",
+          "tahajud",
+          "taraweeh",
+          "other"
+        ],
+        "title": "PrayerType"
+      },
+      "SpecialPrayer": {
+        "properties": {
+          "masjid_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Masjid Id"
+          },
+          "date_start": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Start"
+          },
+          "date_end": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date End"
+          },
+          "is_hijri": {
+            "type": "boolean",
+            "title": "Is Hijri",
+            "default": false
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "type": {
+            "$ref": "#/components/schemas/PrayerType"
+          },
+          "info": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Info"
+          },
+          "imam": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Imam"
+          },
+          "start_time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Time"
+          },
+          "jammat_time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jammat Time"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "masjid_id",
+          "date_start",
+          "date_end",
+          "label",
+          "type",
+          "info",
+          "imam",
+          "start_time",
+          "jammat_time"
+        ],
+        "title": "SpecialPrayer",
+        "example": {
+          "date_end": "1445-06-17",
+          "date_start": "1445-05-17",
+          "id": "123e4567-e89b-12d3-a456-426614174000",
+          "imam": "Muhammad",
+          "info": "Ramadan night prayers",
+          "is_hijri": true,
+          "jammat_time": "22:15",
+          "label": "Taraweeh",
+          "masjid_id": "East London Mosque",
+          "start_time": "22:00",
+          "type": "taraweeh"
+        }
+      },
+      "SpecialPrayerCreate": {
+        "properties": {
+          "masjid_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Masjid Id"
+          },
+          "date_start": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Start"
+          },
+          "date_end": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date End"
+          },
+          "is_hijri": {
+            "type": "boolean",
+            "title": "Is Hijri",
+            "default": false
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "type": {
+            "$ref": "#/components/schemas/PrayerType"
+          },
+          "info": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Info"
+          },
+          "imam": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Imam"
+          },
+          "start_time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Time"
+          },
+          "jammat_time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jammat Time"
+          }
+        },
+        "type": "object",
+        "required": [
+          "masjid_id",
+          "date_start",
+          "date_end",
+          "label",
+          "type",
+          "info",
+          "imam",
+          "start_time",
+          "jammat_time"
+        ],
+        "title": "SpecialPrayerCreate",
+        "example": {
+          "date_end": "1445-06-17",
+          "date_start": "1445-05-17",
+          "id": "123e4567-e89b-12d3-a456-426614174000",
+          "imam": "Muhammad",
+          "info": "Ramadan night prayers",
+          "is_hijri": true,
+          "jammat_time": "22:15",
+          "label": "Taraweeh",
+          "masjid_id": "East London Mosque",
+          "start_time": "22:00",
+          "type": "taraweeh"
+        }
+      },
+      "UserCreate": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "related_masjid": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Related Masjid"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "active",
+          "full_name",
+          "related_masjid",
+          "password"
+        ],
+        "title": "UserCreate"
+      },
+      "UserLogin": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "UserLogin"
+      },
+      "UserPasswordReset": {
+        "properties": {
+          "new_password": {
+            "type": "string",
+            "title": "New Password"
+          },
+          "confirm_password": {
+            "type": "string",
+            "title": "Confirm Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "new_password",
+          "confirm_password"
+        ],
+        "title": "UserPasswordReset"
+      },
+      "UserRead": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "related_masjid": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Related Masjid"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "active",
+          "full_name",
+          "related_masjid",
+          "id"
+        ],
+        "title": "UserRead"
+      },
+      "UserRole": {
+        "type": "string",
+        "enum": [
+          "admin",
+          "masjid_admin"
+        ],
+        "title": "UserRole"
+      },
+      "UserUpdate": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "related_masjid": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Related Masjid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "active",
+          "full_name",
+          "related_masjid"
+        ],
+        "title": "UserUpdate"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

@@ -29,16 +29,15 @@ def get_password_hash(password: str):
     return bcrypt.hashpw(bytes, salt).decode('utf-8')
 
 
-def get_user(id: str,  db: Session = Depends(get_session)):
+def get_user(id: str, db: Session = Depends(get_session), allow_disabled: bool = False):
     user = db.get(User, id)
-    print(user)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User not found with id: {id}",
         )
     
-    if user.active is False:
+    if user.active is False and not allow_disabled:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"User is disabled",
@@ -62,13 +61,13 @@ def check_user_update_privileges(user: User, user_to_update_id: str):
     # Admin can update any user
     if user.role == "admin":
         return True
-    # Can onlt update own user
+    # Non-admins can only update their own details
     elif str(user.id) == user_to_update_id:
         return True
     else:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"User does not have permission to update user",
+            detail=f"Only admins can update other users' details",
         )
 
 
@@ -152,26 +151,28 @@ def change_user_password(id: str, password: str, db: Session = Depends(get_sessi
     return user
 
 
-def update_user(id: str, user: UserUpdate, db: Session = Depends(get_session)):
+def update_user(id: str, user: UserUpdate, requesting_user: User, db: Session = Depends(get_session)):
     UserUpdate.model_validate(user)
 
-    user_to_update = get_user(id, db=db)
-    if not user_to_update:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User not found with id: {id}",
-        )
+    # Allow admins to access disabled users
+    user_to_update = get_user(id, db=db, allow_disabled=(requesting_user.role == "admin"))
     
-    if not user.role == "admin":
+    # Only admins can change roles and masjid assignments
+    if requesting_user.role != "admin":
         if user.role and user.role != user_to_update.role:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"User cannot change their role",
+                detail=f"Only admins can change user roles",
             )
         if user.related_masjid and user.related_masjid != user_to_update.related_masjid:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"User cannot change their masjid",
+                detail=f"Only admins can change user masjid assignments",
+            )
+        if user.active is not None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Only admins can enable/disable users",
             )
 
     user_data = user.model_dump(exclude_unset=True)

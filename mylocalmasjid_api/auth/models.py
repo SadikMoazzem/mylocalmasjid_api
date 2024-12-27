@@ -49,3 +49,12 @@ class UserPasswordReset(BaseModel):
 
 class AuthRefreshToken(BaseModel):
     refresh_token: str
+
+
+class AuthTokens(BaseModel):
+    access_token: str
+    refresh_token: str
+
+
+class AuthAccessToken(BaseModel):
+    access_token: str

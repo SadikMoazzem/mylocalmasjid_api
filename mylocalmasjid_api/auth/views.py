@@ -8,7 +8,9 @@ from mylocalmasjid_api.auth.authenticate import (
     encode_update_token,
 )
 from mylocalmasjid_api.auth.models import (
+    AuthAccessToken,
     AuthRefreshToken,
+    AuthTokens,
     UserCreate,
     UserLogin,
     UserPasswordReset,
@@ -32,7 +34,7 @@ router = APIRouter()
 logger = logger_config(__name__)
 
 # Standard login endpoint. Will return an access token and a refresh token
-@router.post('/login')
+@router.post('/login', response_model=AuthTokens)
 def login(
     user: UserLogin,
     db: Session = Depends(get_session)
@@ -48,13 +50,13 @@ def login(
     return encode_login_token(user=user)
 
 
-@router.post('/refresh', response_model=AuthRefreshToken)
+@router.post('/refresh', response_model=AuthAccessToken)
 def update_token(
     user=Depends(auth_refresh_wrapper)
 ):
-	if user is None:
-		raise HTTPException(status_code=401, detail="not authorization")
-	return encode_update_token(user=user)
+    if user is None:
+        raise HTTPException(status_code=401, detail="not authorization")
+    return encode_update_token(user=user)
 
 
 @router.get('/users', response_model=list[UserRead])
@@ -106,7 +108,7 @@ def update_a_user(
 ):
     check_user_update_privileges(user_request, user_id)
      
-    updated_user = update_user(user_id, user, db=db)
+    updated_user = update_user(user_id, user, requesting_user=user_request, db=db)
     if not updated_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
