@@ -137,7 +137,7 @@ def create_user(
 
 
 # Change password endpoint.
-@router.patch('/user/{user_id}/password-reset')
+@router.put('/user/{user_id}/password-reset')
 def change_a_password(
     user_id: str,
     change_obj: UserPasswordReset,
