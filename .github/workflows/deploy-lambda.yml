@@ -42,7 +42,7 @@ jobs:
       run: |
           curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user
 
-    - name: Set up GitHub CLI with PAT
+    - name: Set up GitHub CLI with PATs
       run: |
             echo ${{ secrets.MY_PAT }} | gh auth login --with-token
         
