@@ -47,6 +47,7 @@ jobs:
       with:
         role-to-assume: arn:aws:iam::026290566452:role/github-actions-role
         aws-region: eu-west-2
+        web-identity-token-file: /tmp/oidc_token.jwt
           
     - name: Run AWS command
       run: |
