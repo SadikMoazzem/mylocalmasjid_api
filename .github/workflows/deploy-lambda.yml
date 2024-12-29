@@ -29,8 +29,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Show OIDC token
-      run: echo ${{ secrets.GITHUB_TOKEN }}
+    - name: Show first 4 characters of OIDC token
+      run: |
+        echo "First 4 characters of the token: ${GITHUB_TOKEN:0:4}"
+
+    - name: Check OIDC Token
+      run: |
+          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
