@@ -20,6 +20,7 @@ jobs:
   build-and-deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
+    environment: production
     
     permissions:
       id-token: write
@@ -54,7 +55,6 @@ jobs:
 
     - name: Deploy to Production
       id: deploy
-      environment: production
       run: |
         # Publish new version with commit SHA as description
         VERSION=$(aws lambda update-function-code \
