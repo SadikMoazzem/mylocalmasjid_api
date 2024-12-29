@@ -57,13 +57,17 @@ jobs:
     - name: Deploy to Production
       id: deploy
       run: |
-        # Publish new version with commit SHA as description
+        # Upload new code and publish version
         VERSION=$(aws lambda update-function-code \
           --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
           --zip-file fileb://lambda.zip \
           --publish \
-          --description "Deployed from commit: ${{ github.sha }}" \
           --query 'Version' --output text)
+        
+        # Update function configuration with commit description
+        aws lambda update-function-configuration \
+          --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+          --description "Deployed from commit: ${{ github.sha }}"
         
         # Update production alias to point to new version
         aws lambda update-alias \
