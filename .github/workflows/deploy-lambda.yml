@@ -42,12 +42,10 @@ jobs:
       run: |
           curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user
 
-    # Set up GitHub CLI using PAT for authentication
     - name: Set up GitHub CLI with PAT
       run: |
-          gh auth login --with-token < ${GITHUB_TOKEN}
-      env:
-          GITHUB_TOKEN: ${{ secrets.MY_PAT }}
+            echo ${{ secrets.MY_PAT }} | gh auth login --with-token
+        
 
     - name: Set up AWS credentials using OIDC
       uses: aws-actions/configure-aws-credentials@v4
