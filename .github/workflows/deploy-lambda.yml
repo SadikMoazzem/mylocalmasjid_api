@@ -33,6 +33,11 @@ jobs:
       run: |
         echo "First 4 characters of the token: ${GITHUB_TOKEN:0:4}"
 
+    - name: Debug with PAT
+      run: |
+          curl -H "Authorization: Bearer ${{ secrets.MY_PAT }}" https://api.github.com/user
+
+
     - name: Check OIDC Token
       run: |
           curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user
