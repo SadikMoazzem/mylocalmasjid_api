@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from mangum import Mangum
 from starlette.middleware.cors import CORSMiddleware
+import sentry_sdk
 
 from mylocalmasjid_api.auth import api as auth_api
 from mylocalmasjid_api.config import settings
@@ -8,6 +9,17 @@ from mylocalmasjid_api.public import api as public_api
 from mylocalmasjid_api.utils.logger import logger_config
 
 logger = logger_config(__name__)
+
+# Initialize Sentry
+sentry_sdk.init(
+    dsn="https://0a4d20c2635be844f8585cd1a677fbd9@o372762.ingest.us.sentry.io/4508548172677120",
+    traces_sample_rate=1.0,
+    release=f"mylocalmasjid-api@{settings.VERSION}",
+    environment=settings.ENV,
+    _experiments={
+        "continuous_profiling_auto_start": True,
+    },
+)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

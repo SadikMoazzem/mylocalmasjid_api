@@ -25,6 +25,7 @@ python-jose = "^3.3.0"
 pyjwt = "^2.8.0"
 bcrypt = "3.2.2"
 pyislam = "^0.1.1"
+sentry-sdk = {extras = ["fastapi"], version = "^2.19.2"}
 
 [tool.poetry.group.alembic.dependencies]
 alembic = "^1.13.1"
