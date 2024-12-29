@@ -42,6 +42,16 @@ jobs:
       run: |
           curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user
 
+    - name: Set up AWS credentials using OIDC
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::026290566452:role/github-actions-role
+        aws-region: eu-west-2
+          
+    - name: Run AWS command
+      run: |
+        aws sts get-caller-identity
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
