@@ -29,39 +29,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Show first 4 characters of OIDC token
-      run: |
-        echo "First 4 characters of the token: ${GITHUB_TOKEN:0:4}"
-
-    - name: Debug with PAT
-      run: |
-          curl -H "Authorization: Bearer ${{ secrets.MY_PAT }}" https://api.github.com/user
-
-
-    - name: Check OIDC Token
-      run: |
-          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user
-
-    - name: Set up GitHub CLI with PATs
-      run: |
-            echo ${{ secrets.MY_PAT }} | gh auth login --with-token
-        
-
-    - name: Set up AWS credentials using OIDC
+    - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: arn:aws:iam::026290566452:role/github-actions-role
-        aws-region: eu-west-2
-          
-    - name: Run AWS command
-      run: |
-        aws sts get-caller-identity
-
-    # - name: Configure AWS Credentials
-    #   uses: aws-actions/configure-aws-credentials@v4
-    #   with:
-    #     role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-    #     aws-region: ${{ env.AWS_REGION }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
     
     - name: Setup Python
       uses: actions/setup-python@v5
