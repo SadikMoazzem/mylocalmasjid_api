@@ -64,10 +64,16 @@ jobs:
           --publish \
           --query 'Version' --output text)
         
+        # Wait for the update to complete
+        aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
+        
         # Update function configuration with commit description
         aws lambda update-function-configuration \
           --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
           --description "Deployed from commit: ${{ github.sha }}"
+        
+        # Wait for the configuration update to complete
+        aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
         
         # Update production alias to point to new version
         aws lambda update-alias \
