@@ -19,6 +19,21 @@ sentry_sdk.init(
     _experiments={
         "continuous_profiling_auto_start": True,
     },
+    
+    # Lambda-specific settings
+    enable_tracing=True,
+    auto_enabling_integrations=True,
+    
+    # Adjust sample rates based on your needs
+    profiles_sample_rate=1.0,  # Performance profiling
+    
+    # Add Lambda context
+    include_local_variables=True,
+    attach_stacktrace=True,
+    
+    # Optional: Configure transport
+    transport=sentry_sdk.transport.HttpTransport,
+    shutdown_timeout=2  # Shorter timeout for Lambda
 )
 
 app = FastAPI(

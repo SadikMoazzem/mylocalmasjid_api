@@ -17,14 +17,9 @@ env:
   PYTHON_VERSION: '3.9.18'
 
 jobs:
-  build-and-deploy:
-    name: Build and Deploy
+  build-and-stage:
+    name: Build and Deploy to Staging
     runs-on: ubuntu-latest
-    environment: production
-    
-    permissions:
-      id-token: write
-      contents: read
     
     steps:
     - uses: actions/checkout@v4
@@ -53,7 +48,33 @@ jobs:
           --zip-file fileb://lambda.zip
         
         echo "✅ Updated staging environment ($LATEST)"
+    
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: lambda-package
+        path: lambda.zip
+        retention-days: 1
 
+  deploy-production:
+    name: Deploy to Production
+    needs: build-and-stage
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: Download Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: lambda-package
+    
     - name: Deploy to Production
       id: deploy
       run: |
