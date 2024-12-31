@@ -1,4 +1,4 @@
-name: Deploy Lambda API to Staging
+name: Deploy Lambda API
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
       - '**.py'
       - 'pyproject.toml'
       - 'poetry.lock'
+  workflow_dispatch:
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -16,9 +17,11 @@ env:
   PYTHON_VERSION: '3.9.18'
 
 jobs:
-  deploy-staging:
+  build-and-deploy-staging:
     name: Build and Deploy to Staging
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.deploy-staging.outputs.version }}
     
     steps:
     - uses: actions/checkout@v4
@@ -41,6 +44,7 @@ jobs:
         make setup-prod
     
     - name: Deploy to Staging
+      id: deploy-staging
       run: |
         # Upload new code and publish version
         VERSION=$(aws lambda update-function-code \
@@ -86,11 +90,62 @@ jobs:
           --stage-name staging \
           --description "Lambda version $VERSION"
         
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
         echo "✅ Deployed version $VERSION to staging"
+
+  wait-for-approval:
+    needs: build-and-deploy-staging
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pending Production Deployment
+        run: |
+          echo "Waiting for production deployment approval..."
+          echo "Version to be deployed: ${{ needs.build-and-deploy-staging.outputs.version }}"
+
+  deploy-production:
+    needs: [build-and-deploy-staging, wait-for-approval]
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    environment: production
     
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
       with:
-        name: lambda-package
-        path: lambda.zip
-        retention-days: 1 
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: Deploy to Production
+      run: |
+        VERSION="${{ needs.build-and-deploy-staging.outputs.version }}"
+        
+        # Update production alias to point to the version
+        aws lambda update-alias \
+          --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+          --name production \
+          --function-version $VERSION \
+          --description "Production deployment of version $VERSION"
+        
+        # Get account ID
+        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+        
+        # Get the Lambda ARN with production alias
+        LAMBDA_ARN="arn:aws:lambda:${AWS_REGION}:${AWS_ACCOUNT_ID}:function:${{ env.LAMBDA_FUNCTION_NAME }}:production"
+        
+        # Update API Gateway integration to use production alias
+        aws apigateway update-integration \
+          --rest-api-id ${{ env.API_GATEWAY_ID }} \
+          --resource-id ${{ env.API_GATEWAY_ROOT_RESOURCE_ID }} \
+          --http-method ANY \
+          --patch-operations \
+            op=replace,path=/uri,value="arn:aws:apigateway:${AWS_REGION}:lambda:path/2015-03-31/functions/${LAMBDA_ARN}/invocations"
+        
+        # Create deployment to make changes live
+        aws apigateway create-deployment \
+          --rest-api-id ${{ env.API_GATEWAY_ID }} \
+          --stage-name v1 \
+          --description "Lambda version $VERSION"
+        
+        echo "✅ Deployed version $VERSION to production" 
