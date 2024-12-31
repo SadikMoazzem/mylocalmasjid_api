@@ -1,0 +1,96 @@
+name: Deploy Lambda API to Staging
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.py'
+      - 'pyproject.toml'
+      - 'poetry.lock'
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  LAMBDA_FUNCTION_NAME: ${{ vars.LAMBDA_FUNCTION_NAME }}
+  API_GATEWAY_ID: ${{ vars.API_GATEWAY_ID }}
+  API_GATEWAY_ROOT_RESOURCE_ID: ${{ vars.API_GATEWAY_ROOT_RESOURCE_ID }}
+  PYTHON_VERSION: '3.9.18'
+
+jobs:
+  deploy-staging:
+    name: Build and Deploy to Staging
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Build Lambda Package
+      run: |
+        python -m pip install poetry
+        make setup-prod
+    
+    - name: Deploy to Staging
+      run: |
+        # Upload new code and publish version
+        VERSION=$(aws lambda update-function-code \
+          --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+          --zip-file fileb://lambda.zip \
+          --publish \
+          --query 'Version' --output text)
+        
+        # Wait for code update to complete
+        aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
+        
+        # Update configuration
+        aws lambda update-function-configuration \
+          --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+          --environment "Variables={API_ENV=staging}"
+        
+        # Wait for configuration update to complete
+        aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
+        
+        # Update staging alias to point to new version
+        aws lambda update-alias \
+          --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+          --name staging \
+          --function-version $VERSION
+        
+        # Get account ID
+        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+        
+        # Get the Lambda ARN with alias instead of version
+        LAMBDA_ARN="arn:aws:lambda:${AWS_REGION}:${AWS_ACCOUNT_ID}:function:${{ env.LAMBDA_FUNCTION_NAME }}:staging"
+        
+        # Update API Gateway integration to use alias
+        aws apigateway update-integration \
+          --rest-api-id ${{ env.API_GATEWAY_ID }} \
+          --resource-id ${{ env.API_GATEWAY_ROOT_RESOURCE_ID }} \
+          --http-method ANY \
+          --patch-operations \
+            op=replace,path=/uri,value="arn:aws:apigateway:${AWS_REGION}:lambda:path/2015-03-31/functions/${LAMBDA_ARN}/invocations"
+        
+        # Create deployment to make changes live
+        aws apigateway create-deployment \
+          --rest-api-id ${{ env.API_GATEWAY_ID }} \
+          --stage-name staging \
+          --description "Lambda version $VERSION"
+        
+        echo "✅ Deployed version $VERSION to staging"
+    
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: lambda-package
+        path: lambda.zip
+        retention-days: 1 
