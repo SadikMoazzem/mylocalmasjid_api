@@ -71,10 +71,13 @@ jobs:
           # Update API_ENV while preserving other variables
           UPDATED_ENV=$(echo $CURRENT_ENV | jq '. + {"API_ENV": "staging"}')
           
+          # Convert to proper format for AWS CLI
+          ESCAPED_ENV=$(echo "{\"Variables\": $UPDATED_ENV}" | jq -c .)
+          
           # Update function configuration with merged environment variables
           aws lambda update-function-configuration \
             --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
-            --environment "Variables=${UPDATED_ENV}"
+            --environment "$ESCAPED_ENV"
           aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
           
           echo "🔗 Updating staging alias..."
@@ -142,10 +145,13 @@ jobs:
           # Update API_ENV while preserving other variables
           UPDATED_ENV=$(echo $CURRENT_ENV | jq '. + {"API_ENV": "production"}')
           
+          # Convert to proper format for AWS CLI
+          ESCAPED_ENV=$(echo "{\"Variables\": $UPDATED_ENV}" | jq -c .)
+          
           # Update function configuration with merged environment variables
           aws lambda update-function-configuration \
             --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
-            --environment "Variables=${UPDATED_ENV}"
+            --environment "$ESCAPED_ENV"
           aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
           
           aws lambda update-alias \
