@@ -1,13 +1,25 @@
 name: Deploy Lambda API
 
 on:
+  # Automatic trigger on push to main
   push:
     branches: [ main ]
     paths:
       - '**.py'
       - 'pyproject.toml'
       - 'poetry.lock'
+  
+  # Manual trigger with environment selection
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -20,6 +32,8 @@ jobs:
   build-and-stage:
     name: Build and Deploy to Staging
     runs-on: ubuntu-latest
+    # Skip staging if manually triggered for production
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.environment != 'production'
     
     steps:
     - uses: actions/checkout@v4
@@ -47,6 +61,12 @@ jobs:
           --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
           --zip-file fileb://lambda.zip
         
+        aws lambda update-function-configuration \
+          --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+          --environment "Variables={API_ENV=staging}"
+        
+        aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
+        
         echo "✅ Updated staging environment ($LATEST)"
     
     - name: Upload Artifact
@@ -58,7 +78,11 @@ jobs:
 
   deploy-production:
     name: Deploy to Production
-    needs: build-and-stage
+    # Run after staging for push events, or directly for manual production deployment
+    needs: [build-and-stage]
+    if: |
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
     runs-on: ubuntu-latest
     environment: production
     
@@ -88,10 +112,11 @@ jobs:
         # Wait for the update to complete
         aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
         
-        # Update function configuration with commit description
+        # Update function configuration with environment and commit description
         aws lambda update-function-configuration \
           --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
-          --description "Deployed from commit: ${{ github.sha }}"
+          --description "Deployed from commit: ${{ github.sha }}" \
+          --environment "Variables={API_ENV=production}"
         
         # Wait for the configuration update to complete
         aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
