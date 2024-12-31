@@ -62,9 +62,19 @@ jobs:
           aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
           
           echo "🔄 Updating environment variables for staging..."
+          # Get current environment variables
+          CURRENT_ENV=$(aws lambda get-function-configuration \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --query 'Environment.Variables' \
+            --output json)
+          
+          # Update API_ENV while preserving other variables
+          UPDATED_ENV=$(echo $CURRENT_ENV | jq '. + {"API_ENV": "staging"}')
+          
+          # Update function configuration with merged environment variables
           aws lambda update-function-configuration \
             --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
-            --environment "Variables={API_ENV=staging}"
+            --environment "Variables=${UPDATED_ENV}"
           aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
           
           echo "🔗 Updating staging alias..."
@@ -122,6 +132,21 @@ jobs:
           VERSION="${{ needs.build-and-deploy-staging.outputs.version }}"
           
           echo "🚀 Starting production deployment of version $VERSION..."
+          
+          # Get current environment variables
+          CURRENT_ENV=$(aws lambda get-function-configuration \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --query 'Environment.Variables' \
+            --output json)
+          
+          # Update API_ENV while preserving other variables
+          UPDATED_ENV=$(echo $CURRENT_ENV | jq '. + {"API_ENV": "production"}')
+          
+          # Update function configuration with merged environment variables
+          aws lambda update-function-configuration \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --environment "Variables=${UPDATED_ENV}"
+          aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
           
           aws lambda update-alias \
             --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
