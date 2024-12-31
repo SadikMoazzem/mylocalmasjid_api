@@ -57,14 +57,20 @@ jobs:
     
     - name: Deploy to Staging
       run: |
+        # Update function code
         aws lambda update-function-code \
           --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
           --zip-file fileb://lambda.zip
         
+        # Wait for code update to complete
+        aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
+        
+        # Update configuration
         aws lambda update-function-configuration \
           --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
           --environment "Variables={API_ENV=staging}"
         
+        # Wait for configuration update to complete
         aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
         
         echo "✅ Updated staging environment ($LATEST)"
@@ -109,7 +115,7 @@ jobs:
           --publish \
           --query 'Version' --output text)
         
-        # Wait for the update to complete
+        # Wait for code update to complete
         aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
         
         # Update function configuration with environment and commit description
@@ -118,7 +124,7 @@ jobs:
           --description "Deployed from commit: ${{ github.sha }}" \
           --environment "Variables={API_ENV=production}"
         
-        # Wait for the configuration update to complete
+        # Wait for configuration update to complete
         aws lambda wait function-updated --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
         
         # Update production alias to point to new version
